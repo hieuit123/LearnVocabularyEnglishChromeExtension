@@ -26,7 +26,11 @@
             "file://*/*"
         ],
         "js": [
-            "app/src/content/content.js"
+            "app/src/content/content.js",
+            "app/src/vendors/js/jquery-3.5.1.js"
+        ],
+        "css": [
+            "app/src/style/index.css"
         ]
     }],
     "background": {
@@ -34,5 +38,8 @@
             "app/src/background/background.js"
         ],
         "persistent": false
-    }
+    },
+    "web_accessible_resources": [
+        "assets/*.png"
+    ]
 }
