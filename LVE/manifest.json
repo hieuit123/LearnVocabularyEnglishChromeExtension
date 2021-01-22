@@ -1,0 +1,38 @@
+{
+    "name": "LVE",
+    "description": "Learn Vocabulary English",
+    "version": "1.0",
+    "icons": {
+        "16": "assets/32.png",
+        "48": "assets/64.png",
+        "128": "assets/128.png"
+    },
+    "browser_action": {
+        "default_icon": "assets/32.png",
+        "default_popup": "app/src/index.html"
+    },
+    "permissions": [
+        "<all_urls>",
+        "tts",
+        "storage",
+        "unlimitedStorage",
+        "contextMenus"
+    ],
+    "manifest_version": 2,
+    "content_scripts": [{
+        "matches": [
+            "http://*/*",
+            "https://*/*",
+            "file://*/*"
+        ],
+        "js": [
+            "app/src/content/content.js"
+        ]
+    }],
+    "background": {
+        "scripts": [
+            "app/src/background/background.js"
+        ],
+        "persistent": false
+    }
+}
