@@ -1,14 +1,19 @@
+//Create Icon
+var dIcon = document.createElement("DIV");
+dIcon.className = "icon-lve";
+dIcon.innerHTML = "";
+document.body.appendChild(dIcon);
+var urlSrc = chrome.runtime.getURL("/assets/32.png");
+dIcon.innerHTML = "<image src=\"" + urlSrc + "\">";
+
 document.addEventListener('mouseup', function(event) {
     var sel = window.getSelection().toString();
 
     if (sel.length) {
-        //Create 
-        var para = document.createElement("DIV");
-        para.innerText = "This is a paragraph.";
-        var att = document.createAttribute("id");
-        att.value = "icon";
-        para.setAttributeNode(att);
-        document.body.appendChild(para);
+        //show icon
+        $(".icon-lve").css({ left: event.pageX });
+        $(".icon-lve").css({ top: event.pageY });
+        $(".icon-lve").show();
     }
 
 })
