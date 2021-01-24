@@ -16,7 +16,8 @@
         "tts",
         "storage",
         "unlimitedStorage",
-        "contextMenus"
+        "contextMenus",
+        "tabs"
     ],
     "manifest_version": 2,
     "content_scripts": [{
