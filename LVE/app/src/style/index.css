@@ -6,6 +6,35 @@
     transition: transform .2s;
 }
 
+.icon-lve:hover {
+    -ms-transform: scale(1.1);
+    /* IE 9 */
+    -webkit-transform: scale(1.1);
+    /* Safari 3-8 */
+    transform: scale(1.1);
+}
+
+.icon-translate {
+    width: 22px;
+}
+
+.i-speaker {
+    float: left;
+    padding-top: 4px;
+}
+
+.i-speaker:hover {
+    -ms-transform: scale(1.1);
+    /* IE 9 */
+    -webkit-transform: scale(1.1);
+    /* Safari 3-8 */
+    transform: scale(1.1);
+}
+
+.icon-loading {
+    width: 300px;
+}
+
 .parent-popup {
     display: none;
     position: absolute;
@@ -15,12 +44,13 @@
     box-shadow: 1px 1px 3px gray;
 }
 
-.icon-lve:hover {
-    -ms-transform: scale(1.1);
-    /* IE 9 */
-    -webkit-transform: scale(1.1);
-    /* Safari 3-8 */
-    transform: scale(1.1);
+.parent-loading-popup {
+    display: none;
+    position: absolute;
+    z-index: 100;
+    border-radius: 10px;
+    border: 1px solid gray;
+    box-shadow: 1px 1px 3px gray;
 }
 
 .popup {
@@ -29,7 +59,7 @@
 }
 
 .tpopup {
-    padding: 5px;
+    padding: 5px 5px 8px 5px;
     text-align: center;
     font-size: 22px;
     background-color: #ffffff;
@@ -42,14 +72,11 @@
     font-weight: 500;
 }
 
-.icon-translate {
-    width: 22px;
-}
-
 .body-popup {
     background-color: #CDFFBB;
     padding-bottom: 10px;
     padding-right: 6px;
+    border: 0 0 0 1px solid gray;
 }
 
 .word {
@@ -59,7 +86,7 @@
 .o-word {
     text-transform: uppercase;
     padding: 7px 2px 2px 5px;
-    font-size: 19px;
+    font-size: 18px;
     font-weight: 500;
     color: #484848;
     float: left;
@@ -69,10 +96,6 @@
     font-size: 17px;
     color: #707070;
     padding-left: 5px;
-}
-
-.i-speaker {
-    float: left;
 }
 
 .clearfix {
