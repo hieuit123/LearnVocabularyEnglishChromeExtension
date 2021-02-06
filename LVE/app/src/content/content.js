@@ -177,7 +177,6 @@ document.getElementById("i-lve").addEventListener('click', async() => {
     //text to speech
     $("#btn-speak").click(() => {
         say(sel)
-        alert("Hello")
     })
 
     //Refresh popup
