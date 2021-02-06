@@ -9,7 +9,7 @@
 
     chrome.contextMenus.create({
         "id": "translateTab",
-        "title": "Open translate window",
+        "title": "Mở Learning Vocabulary English",
         "parentId": "LVE",
         "contexts": [
             "all"
@@ -18,7 +18,7 @@
 
     chrome.contextMenus.create({
             "id": "gameCenter",
-            "title": "Ball English Vocabulary",
+            "title": "Ôn lại từ đã lưu",
             "parentId": "LVE",
             "contexts": [
                 "all"

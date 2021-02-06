@@ -41,6 +41,7 @@
         "persistent": false
     },
     "web_accessible_resources": [
-        "assets/*.png"
+        "assets/*.png",
+        "assets/*.gif"
     ]
 }
