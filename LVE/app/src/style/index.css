@@ -168,3 +168,62 @@
     padding: 5px 0px 5px 2px;
     border-radius: 5px;
 }
+
+
+/* start background css */
+
+.back-popup {
+    width: 300px;
+    background-color: #b4b4b4;
+}
+
+.header {
+    background-color: white;
+}
+
+.title {
+    color: #1e4bff;
+    font-size: large;
+}
+
+.btn-logout {
+    background-color: #42c800;
+    border: 2px solid white;
+    border-radius: 10px;
+    color: white;
+    width: 65px;
+    padding: 0px 0px 3px 10px;
+    margin-top: 5px;
+    margin-right: 5px;
+    font-weight: bold;
+    float: right;
+}
+
+.t-welcome {
+    background-color: white;
+    color: #1e4bff;
+}
+
+.footer {}
+
+.my-vocabulary {}
+
+.t-my-vocabulary {}
+
+.t-number-word {}
+
+.line-1 {}
+
+.line-2 {}
+
+.new-vocabulary {}
+
+.t-new-vocabulary {}
+
+.t-number-new-word {}
+
+.btn-footer {}
+
+.btn-word-book {}
+
+.btn-review-word {}
