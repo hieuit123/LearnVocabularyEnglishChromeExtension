@@ -168,3 +168,167 @@
     padding: 5px 0px 5px 2px;
     border-radius: 5px;
 }
+
+
+/* start background css */
+
+body {
+    margin: 0px;
+}
+
+.back-popup {
+    width: 300px;
+    background-color: #e6e6e6;
+    padding-bottom: 20px;
+}
+
+.header {
+    background-color: white;
+}
+
+.title {
+    margin: auto;
+    width: 65%;
+    color: #1e4bff;
+    font-size: large;
+    font-weight: 700;
+    padding: 5px;
+}
+
+.btn-logout {
+    background-color: #42c800;
+    border: 2px solid white;
+    border-radius: 10px;
+    color: white;
+    width: 65px;
+    padding: 0px 0px 3px 10px;
+    margin-top: 5px;
+    margin-right: 35px;
+    font-weight: bold;
+    float: right;
+}
+
+.btn-logout:hover {
+    background-color: #329600;
+    cursor: pointer;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.10);
+}
+
+.t-welcome {
+    margin: auto;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    width: 60%;
+    padding: 5px 30px 5px 30px;
+    background-color: white;
+    color: #1e4bff;
+    font-size: 15px;
+    font-weight: 700;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.footer {
+    margin: auto;
+    margin-top: 5px;
+    width: 60%;
+    padding: 5px 30px 5px 30px;
+    background-color: white;
+    border-radius: 10px;
+}
+
+.my-vocabulary {
+    margin: auto;
+    width: 80%;
+}
+
+.t-my-vocabulary {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e4bff;
+    text-align: center;
+}
+
+.t-number-word {
+    color: #707070;
+    text-align: center;
+    font-size: xx-large;
+    font-weight: 700;
+}
+
+.tu {
+    color: #1e4bff;
+    font-size: large;
+}
+
+.line-1 {
+    margin: auto;
+    width: 180px;
+    margin-top: 10px;
+}
+
+.line-2 {
+    margin: auto;
+    width: 150px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.new-vocabulary {
+    margin: auto;
+    width: 80%;
+}
+
+.t-new-vocabulary {
+    color: #2f2f2f;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.t-number-new-word {
+    color: #42c800;
+    text-align: center;
+    font-size: xx-large;
+    font-weight: 700;
+}
+
+.btn-footer {
+    padding-bottom: 7px;
+}
+
+.btn-word-book {
+    background-color: #42c800;
+    color: white;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    text-align: center;
+    width: 48%;
+    float: left;
+    padding: 2px 0px 2px 0px;
+}
+
+.btn-review-word {
+    background-color: #00b9ff;
+    color: white;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    text-align: center;
+    width: 48%;
+    float: right;
+    padding: 2px 0px 2px 0px;
+}
+
+.btn-word-book:hover {
+    background-color: #329600;
+    cursor: pointer;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.10);
+}
+
+.btn-review-word:hover {
+    background-color: #009bd3;
+    cursor: pointer;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.10);
+}
