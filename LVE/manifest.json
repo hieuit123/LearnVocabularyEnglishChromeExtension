@@ -42,6 +42,8 @@
     },
     "web_accessible_resources": [
         "assets/*.png",
-        "assets/*.gif"
+        "assets/*.gif",
+        "app/src/util.js",
+        "app/src/constant.js"
     ]
 }
