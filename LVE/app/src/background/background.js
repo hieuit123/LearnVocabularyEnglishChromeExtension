@@ -1,5 +1,7 @@
 var token = null;
 var accountID = null;
+var localToken = localStorage.getItem("tokenlve")
+var localAccountID = localStorage.getItem("accountIDlve")
 //Create Menu context
 chrome.contextMenus.create({
     "id": "LVE",
@@ -35,8 +37,10 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
         case "advanceTranslate": { break; }
     }
 })
+if(localStorage.getItem("tokenlve"))
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
+        console.log(request.action);
         if (request.action == "sendToken") {
             if (request.token) {
                 token = request.token
@@ -46,6 +50,11 @@ chrome.runtime.onMessage.addListener(
             }
         }
         if(request.action == "logout") localStorage.clear()
+        if(request.action == "getToken") {
+            if(localToken){
+                sendResponse({token:localToken, accountID:localAccountID})
+            }
+        }
     }
 );
 //Listen message

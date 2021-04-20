@@ -1,14 +1,27 @@
 // check login
 let myToken = localStorage.getItem("tokenlve")
 let accountID = localStorage.getItem("accountIDlve")
+
 if (accountID == 'false') chrome.runtime.sendMessage({ action: "logout" });
 if (myToken) {
     console.log(myToken);
     //send token to account js
     chrome.runtime.sendMessage({ action: "sendToken", token: myToken, accountID: accountID });
 } else {
-    //send announcement not login to account js
-    chrome.runtime.sendMessage({ action: "sendToken", token: null });
+    //send announcement not login to background js
+    chrome.runtime.sendMessage({ action: "getToken" }, (res) => {
+        console.log(res.token)
+        if (res) {
+            //set local data
+            localStorage.setItem("tokenlve", res.token)
+            localStorage.setItem("accountIDlve", res.accountID)
+            myToken = res.token
+            accountID = res.accountID
+        }
+    })
+
+    //chrome.runtime.sendMessage({ action: "sendToken", token: null })
+
 }
 
 //CONST
@@ -166,7 +179,7 @@ document.getElementById("i-lve").addEventListener('click', async() => {
                 xhrGetIpaWord.addEventListener("readystatechange", function() {
                     if (this.readyState === this.DONE) {
                         objIpaWord = JSON.parse(this.responseText);
-                        if (objIpaWord.result_code == '200') ipaWordResolve('[' + objIpaWord.ipa + ']')
+                        if (objIpaWord.result_code == '200') ipaWordResolve(objIpaWord)
                         else ipaWordResolve('');
                     }
                 });
@@ -185,17 +198,19 @@ document.getElementById("i-lve").addEventListener('click', async() => {
                 return data.data
             }
         }
-        let myWordbooks = await fetchData("wordbook/getallbyidaccount/8")
+        let myWordbooks = await fetchData(`wordbook/getallbyidaccount/${accountID}`)
+        console.log(myWordbooks)
         let htmlWordBooks = myWordbooks.map((wordbook) => `<option value="${wordbook.WB_Id}">${wordbook.WB_Name}</option>`)
 
         //End Get word books
         //validate
         let tmpExampleWord = await promiseGetExample
-        let tmpIpaWord = await promiseGetIpaWord
+        let myObjIpaWord = await promiseGetIpaWord
+        let tmpIpaWord = objIpaWord.ipa
         let tmpWord = await promiseGetTranslateWord;
         tmpWord = tmpWord.replace("% 20", " ")
-
-        //Update popup
+        console.log(objIpaWord)
+            //Update popup
         if (tmpIpaWord == undefined) tmpIpaWord = ""
         popup = popup.replace(keyOgWord, sel)
         popup = popup.replace(keyExampleOfWord, tmpExampleWord)
@@ -211,13 +226,17 @@ document.getElementById("i-lve").addEventListener('click', async() => {
             })
             //event btn add word
         $("#btn-add-word").click(() => {
+                // if (!accountID) {
+                //     alert("Bạn chưa đăng nhập!")
+                //     return
+                // }
                 //connect data
                 let linkPost = window.location.href
                 let optionWB = document.getElementById("select-wb").value;
                 let originalWord = sel
                 let translateWord = tmpWord
                 let phrase = tmpExampleWord
-                let fullDate = `${today.getDate()}-${today.getMonth()}-${today.getFullYear()}`;
+                let fullDate = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
 
                 let wordRequestData = {
                     W_originalWord: originalWord,
