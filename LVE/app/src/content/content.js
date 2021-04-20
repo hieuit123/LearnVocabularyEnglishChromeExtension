@@ -206,11 +206,30 @@ document.getElementById("i-lve").addEventListener('click', async() => {
         //validate
         let tmpExampleWord = await promiseGetExample
         let myObjIpaWord = await promiseGetIpaWord
-        let tmpIpaWord = objIpaWord.ipa
+        let tmpIpaWord = myObjIpaWord.ipa
         let tmpWord = await promiseGetTranslateWord;
+        //update type of word
+        let typeOfWord = ""
+        let flagContinueTypeOfWord = false;
+        console.log(myObjIpaWord)
+        if (myObjIpaWord.meaning.verb) typeOfWord = typeOfWord.concat("v"), flagContinueTypeOfWord = true;
+        if (myObjIpaWord.meaning.adverb) {
+            typeOfWord = (flagContinueTypeOfWord) ? typeOfWord.concat("/adv") : typeOfWord.concat("adv")
+            flagContinueTypeOfWord = true;
+        }
+        if (myObjIpaWord.meaning.noun) {
+            typeOfWord = (flagContinueTypeOfWord) ? typeOfWord.concat("/n") : typeOfWord.concat("n")
+            flagContinueTypeOfWord = true;
+        }
+        if (myObjIpaWord.meaning.adjective) {
+            typeOfWord = (flagContinueTypeOfWord) ? typeOfWord.concat("/adj") : typeOfWord.concat("adj")
+            flagContinueTypeOfWord = true;
+        }
+        console.log(typeOfWord)
+        tmpIpaWord = tmpIpaWord.concat(`(${typeOfWord})`)
         tmpWord = tmpWord.replace("% 20", " ")
-        console.log(objIpaWord)
-            //Update popup
+
+        //Update popup
         if (tmpIpaWord == undefined) tmpIpaWord = ""
         popup = popup.replace(keyOgWord, sel)
         popup = popup.replace(keyExampleOfWord, tmpExampleWord)
