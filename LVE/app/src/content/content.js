@@ -1,6 +1,6 @@
 // check login
-let myToken = localStorage.getItem("tokenlve")
-let accountID = localStorage.getItem("accountIDlve")
+let myToken = window.localStorage.getItem("tokenlve")
+let accountID = window.localStorage.getItem("accountIDlve")
 
 if (accountID == 'false') chrome.runtime.sendMessage({ action: "logout" });
 if (myToken) {
@@ -9,8 +9,8 @@ if (myToken) {
     chrome.runtime.sendMessage({ action: "sendToken", token: myToken, accountID: accountID });
 } else {
     //send announcement not login to background js
+    console.log("get token")
     chrome.runtime.sendMessage({ action: "getToken" }, (res) => {
-        console.log(res.token)
         if (res) {
             //set local data
             localStorage.setItem("tokenlve", res.token)
@@ -245,10 +245,10 @@ document.getElementById("i-lve").addEventListener('click', async() => {
             })
             //event btn add word
         $("#btn-add-word").click(() => {
-                // if (!accountID) {
-                //     alert("Bạn chưa đăng nhập!")
-                //     return
-                // }
+                if (!accountID) {
+                    alert("Bạn chưa đăng nhập!")
+                    return
+                }
                 //connect data
                 let linkPost = window.location.href
                 let optionWB = document.getElementById("select-wb").value;
@@ -256,7 +256,8 @@ document.getElementById("i-lve").addEventListener('click', async() => {
                 let translateWord = tmpWord
                 let phrase = tmpExampleWord
                 let fullDate = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
-
+                let dataImage = getImageLink()
+                console.log(dataImage)
                 let wordRequestData = {
                     W_originalWord: originalWord,
                     W_translatedWord: translateWord,
@@ -353,7 +354,24 @@ function showPopup(pointX, pointY, classPopup) {
 function hidePopup(classPopup) {
     $(classPopup).hide();
 }
-
+//other api
+async function getImageLink() {
+    let result = await fetch("https://bing-image-search1.p.rapidapi.com/images/search?q=credential&offset=3&count=1", {
+            "method": "GET",
+            "headers": {
+                "x-rapidapi-key": "4163873f00mshac33a4e6303fe2ap107817jsn8c6abd690fd1",
+                "x-rapidapi-host": "bing-image-search1.p.rapidapi.com"
+            }
+        })
+        .then(response => {
+            return response
+        })
+        .catch(err => {
+            return err
+        });
+    return result
+}
+//end api
 function say(m) {
     msg.voice = voices[9];
     msg.voiceURI = "native";
