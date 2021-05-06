@@ -45,12 +45,15 @@ chrome.runtime.onMessage.addListener(
         if (request.action == "sendToken") {
             if (request.token) {
                 token = request.token
+                let tmpLocalToken = localStorage.getItem("tokenlve")
+                if(tmpLocalToken) token = tmpLocalToken
                 localStorage.setItem("tokenlve", token)
                 accountID = request.accountID// get account id
                 localStorage.setItem("accountIDlve", accountID)
+                
             }
         }
-        if(request.action == "logout") localStorage.clear()
+        if(request.action == "logout") window.localStorage.clear()
         if(request.action == "getToken") {
             if(localToken){
                 sendResponse({token:localToken, accountID:localAccountID})
