@@ -1,32 +1,33 @@
 // check login
-let myToken = localStorage.getItem("tokenlve")
-let accountID = localStorage.getItem("accountIDlve")
-
+let accountID = window.localStorage.getItem("accountIDlve")
 if (accountID == 'false') chrome.runtime.sendMessage({ action: "logout" });
-if (myToken) {
-    console.log(myToken);
+
+let myToken = window.localStorage.getItem("tokenlve")
+let tmpUrlCurrent = window.location.href
+
+if (myToken && tmpUrlCurrent === "http://localhost:3000/") {
     //send token to account js
     chrome.runtime.sendMessage({ action: "sendToken", token: myToken, accountID: accountID });
 } else {
-    //send announcement not login to background js
-    chrome.runtime.sendMessage({ action: "getToken" }, (res) => {
-        console.log(res.token)
-        if (res) {
-            //set local data
-            localStorage.setItem("tokenlve", res.token)
-            localStorage.setItem("accountIDlve", res.accountID)
-            myToken = res.token
-            accountID = res.accountID
-        }
-    })
-
-    //chrome.runtime.sendMessage({ action: "sendToken", token: null })
-
+    if (accountID != 'false') {
+        chrome.runtime.sendMessage({ action: "getToken" }, (res) => {
+            if (res) {
+                //set local data
+                localStorage.setItem("tokenlve", res.token)
+                localStorage.setItem("accountIDlve", res.accountID)
+                myToken = res.token
+                accountID = res.accountID
+            }
+        })
+    }
 }
 
 //CONST
 //send token to background js
 //Listen message
+const apiUrl = 'https://translate.googleapis.com';
+const publicUrl = 'https://translate.google.com';
+var apiClient = "dict-chrome-ex";
 const URL_SERVER = "http://localhost:5000/"
 var sel = "";
 var _sel = "";
@@ -40,8 +41,6 @@ var keyExampleOfWord = "LVEExampleOfWord"
 var keyIpaWord = "[LVEIpaWord]"
 var keyWordBooks = "LVEBooks"
 var today = new Date()
-const voices = window.speechSynthesis.getVoices()
-var msg = new SpeechSynthesisUtterance();
 
 var urlSrcIconTranslate = chrome.runtime.getURL("/assets/translate.png");
 var urlSrcIconSpeaker = chrome.runtime.getURL("/assets/speaker.png");
@@ -105,11 +104,44 @@ dLoadingPopup.innerHTML = loadingPopup;
 //End create loading popup
 
 //start event
+//api translate
+function convertPostData(details) {
+    var formBody = [];
+    for (var property in details) {
+        var encodedKey = encodeURIComponent(property);
+        var encodedValue = encodeURIComponent(details[property]);
+        formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
+    return formBody
+}
+
+async function translate(langFrom, langTo, text) {
+    var getApiUrl = (withText = true) => {
+        return apiUrl + '/translate_a/t?' + convertPostData({
+            client: apiClient,
+            q: withText ? text : null,
+            sl: langFrom,
+            tl: langTo,
+            hl: langTo, // header for dictionary (part of speech)
+            dt: [
+                "t", // translation
+                "bd", // dictionary
+                "rm", // translit
+                "qca", // spelling correction
+            ],
+        })
+    }
+    var url = getApiUrl();
+    let result = await fetch(url).then(data => data.json()).then((res) => {
+        return res;
+    })
+    return result
+}
 //Click icon
 
 document.getElementById("i-lve").addEventListener('click', async() => {
         $(".icon-lve").hide();
-
         //show popup
 
         //validate
@@ -120,32 +152,31 @@ document.getElementById("i-lve").addEventListener('click', async() => {
         //show loading popup
         showPopup(point_x, point_y, ".parent-loading-popup")
             //Get translated word
-        let promiseGetTranslateWord = new Promise((translateResolve, translateReject) => {
-            const data = JSON.stringify({
-                "from": "en_GB",
-                "to": "vi_VN",
-                "data": convertWord,
-                "platform": "api"
-            });
 
-            const xhr = new XMLHttpRequest();
-            xhr.withCredentials = true;
+        // let promiseGetTranslateWord = new Promise((resolve, reject) => {
+        //         const data = JSON.stringify([{
+        //             "Text": sel
+        //         }]);
 
-            xhr.addEventListener("readystatechange", function() {
-                if (this.readyState === this.DONE) {
-                    console.log(this.responseText)
-                    let obj = JSON.parse(this.responseText)
-                    translateResolve(obj.result)
-                }
-            });
+        //         const xhr = new XMLHttpRequest();
+        //         xhr.withCredentials = true;
 
-            xhr.open("POST", "https://lingvanex-translate.p.rapidapi.com/translate");
-            xhr.setRequestHeader("content-type", "application/json");
-            xhr.setRequestHeader("x-rapidapi-key", "4163873f00mshac33a4e6303fe2ap107817jsn8c6abd690fd1");
-            xhr.setRequestHeader("x-rapidapi-host", "lingvanex-translate.p.rapidapi.com");
+        //         xhr.addEventListener("readystatechange", function() {
+        //             if (this.readyState === this.DONE) {
+        //                 translateObj = JSON.parse(this.responseText)
+        //                 console.log(translateObj[0].translations[0].text)
+        //                 resolve(translateObj[0].translations[0].text)
+        //             }
+        //         });
 
-            xhr.send(data);
-        });
+        //         xhr.open("POST", "https://microsoft-translator-text.p.rapidapi.com/translate?to=vi&api-version=3.0&from=en&profanityAction=NoAction&textType=plain");
+        //         xhr.setRequestHeader("content-type", "application/json");
+        //         xhr.setRequestHeader("x-rapidapi-key", "4163873f00mshac33a4e6303fe2ap107817jsn8c6abd690fd1");
+        //         xhr.setRequestHeader("x-rapidapi-host", "microsoft-translator-text.p.rapidapi.com");
+
+        //         xhr.send(data);
+        //     })
+        // console.log(translateWordObj)
         //End get translated word
         //Get example
         let promiseGetExample = new Promise((exampleResolve, exampleReject) => {
@@ -204,13 +235,36 @@ document.getElementById("i-lve").addEventListener('click', async() => {
 
         //End Get word books
         //validate
+        let translation = await translate("en", "vi", sel)
+        let tmpWord = translation.sentences[0].trans
         let tmpExampleWord = await promiseGetExample
         let myObjIpaWord = await promiseGetIpaWord
-        let tmpIpaWord = objIpaWord.ipa
-        let tmpWord = await promiseGetTranslateWord;
+        let tmpIpaWord = myObjIpaWord.ipa
+            // let tmpWord = await promiseGetTranslateWord;
+            //update type of word
+        let typeOfWord = ""
+        let flagContinueTypeOfWord = false;
+        if (myObjIpaWord) {
+            if (myObjIpaWord.meaning.verb) typeOfWord = typeOfWord.concat("v"), flagContinueTypeOfWord = true;
+            if (myObjIpaWord.meaning.adverb) {
+                typeOfWord = (flagContinueTypeOfWord) ? typeOfWord.concat("/adv") : typeOfWord.concat("adv")
+                flagContinueTypeOfWord = true;
+            }
+            if (myObjIpaWord.meaning.noun) {
+                typeOfWord = (flagContinueTypeOfWord) ? typeOfWord.concat("/n") : typeOfWord.concat("n")
+                flagContinueTypeOfWord = true;
+            }
+            if (myObjIpaWord.meaning.adjective) {
+                typeOfWord = (flagContinueTypeOfWord) ? typeOfWord.concat("/adj") : typeOfWord.concat("adj")
+                flagContinueTypeOfWord = true;
+            }
+            console.log(typeOfWord)
+            tmpIpaWord = tmpIpaWord.concat(`(${typeOfWord})`)
+        }
+
         tmpWord = tmpWord.replace("% 20", " ")
-        console.log(objIpaWord)
-            //Update popup
+
+        //Update popup
         if (tmpIpaWord == undefined) tmpIpaWord = ""
         popup = popup.replace(keyOgWord, sel)
         popup = popup.replace(keyExampleOfWord, tmpExampleWord)
@@ -225,19 +279,20 @@ document.getElementById("i-lve").addEventListener('click', async() => {
                 say(sel)
             })
             //event btn add word
-        $("#btn-add-word").click(() => {
-                // if (!accountID) {
-                //     alert("Bạn chưa đăng nhập!")
-                //     return
-                // }
-                //connect data
+        $("#btn-add-word").click(async() => {
+                if (sel.length > 30) alert("Từ quá dài")
+                if (!accountID) {
+                    alert("Bạn chưa đăng nhập!")
+                    return
+                }
                 let linkPost = window.location.href
                 let optionWB = document.getElementById("select-wb").value;
                 let originalWord = sel
                 let translateWord = tmpWord
                 let phrase = tmpExampleWord
-                let fullDate = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
-
+                let tmp_translation = await translate("en", "vi", phrase)
+                let phraseMean = tmp_translation.sentences[0].trans
+                let fullDate = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`;
                 let wordRequestData = {
                     W_originalWord: originalWord,
                     W_translatedWord: translateWord,
@@ -246,14 +301,17 @@ document.getElementById("i-lve").addEventListener('click', async() => {
                     W_linkPost: linkPost,
                     W_idWordBook: optionWB,
                     W_dateCreated: fullDate,
-                    W_phraseMean: "update",
+                    W_phraseMean: phraseMean,
                     W_learnTimes: "0",
                     W_Degree: "0",
-                    W_idVocabularyState: "0",
                     W_idLearningNumberDay: "0",
                     W_idCustomDegree: "0",
-                    W_idState: "0",
-                    W_wrongTimes: "0"
+                    W_idState: 3,
+                    W_wrongTimes: "0",
+                    W_idCatalogStored: 1,
+                    W_ipaWord: myObjIpaWord.ipa,
+                    W_typeOfWord: typeOfWord,
+                    AC_Id: accountID
                 }
                 handleAddWord(wordRequestData)
             })
@@ -316,8 +374,16 @@ function refreshTmpWord(tmpWord, tmpExampleWord, tmpIpaWord) {
 
 async function handleAddWord(wordRequestData) {
     let data;
+    let dataImage = await getImageLink(sel)
+    wordRequestData.W_Avatar = dataImage.value[0].thumbnailUrl
+    console.log(dataImage)
     data = await post("word/add", wordRequestData)
-    console.log(data)
+    if (data.status) {
+
+    } else {
+        //alert
+        alert("Từ này đã có trong sổ từ")
+    }
 }
 
 function showPopup(pointX, pointY, classPopup) {
@@ -334,16 +400,33 @@ function showPopup(pointX, pointY, classPopup) {
 function hidePopup(classPopup) {
     $(classPopup).hide();
 }
-
+//other api
+async function getImageLink() {
+    let result = await fetch(`https://bing-image-search1.p.rapidapi.com/images/search?q=${sel}&offset=2&count=1`, {
+            "method": "GET",
+            "headers": {
+                "x-rapidapi-key": "4163873f00mshac33a4e6303fe2ap107817jsn8c6abd690fd1",
+                "x-rapidapi-host": "bing-image-search1.p.rapidapi.com"
+            }
+        })
+        .then(response => {
+            return response.json()
+        })
+        .catch(err => {
+            return err
+        });
+    return result
+}
+var synth = window.speechSynthesis;
+var myVoices = [];
+//end api
 function say(m) {
-    msg.voice = voices[9];
-    msg.voiceURI = "native";
-    msg.volume = 1;
-    msg.rate = 1;
-    msg.pitch = 0.8;
-    msg.text = m;
-    msg.lang = 'en-US';
-    speechSynthesis.speak(msg);
+    var myMsg = new SpeechSynthesisUtterance(m);
+    myVoices = synth.getVoices();
+    myMsg.voice = myVoices[1];
+    myMsg.pitch = 0.9
+    myMsg.rate = 1
+    window.speechSynthesis.speak(myMsg)
 }
 async function post(requestUrl, data) {
     let formBody = convertPostData(data)

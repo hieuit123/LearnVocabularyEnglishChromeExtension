@@ -2,7 +2,7 @@
     display: none;
     position: absolute;
     text-align: center;
-    z-index: 100;
+    z-index: 99999999;
     transition: transform .2s;
 }
 
@@ -40,8 +40,6 @@
     position: absolute;
     z-index: 100;
     border-radius: 10px;
-    border: 1px solid gray;
-    box-shadow: 1px 1px 3px gray;
     z-index: 999;
 }
 
@@ -50,16 +48,15 @@
     position: absolute;
     z-index: 100;
     border-radius: 10px;
-    border: 1px solid gray;
-    box-shadow: 1px 1px 3px gray;
     z-index: 999;
 }
 
 .popup {
     width: 300px;
     height: auto;
-    z-index: 999;
+    z-index: 99999999999;
     line-height: 1.4;
+    box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%);
 }
 
 .tpopup {
@@ -80,7 +77,6 @@
     background-color: #CDFFBB;
     padding-bottom: 10px;
     padding-right: 6px;
-    border: 0 0 0 1px solid gray;
 }
 
 .word {

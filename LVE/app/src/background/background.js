@@ -2,9 +2,10 @@ var token = null;
 var accountID = null;
 var localToken = localStorage.getItem("tokenlve")
 var localAccountID = localStorage.getItem("accountIDlve")
+
 //Create Menu context
 chrome.contextMenus.create({
-    "id": "LVE",
+    "id": "lveextension",
     "title": "Learn English - LVE",
     "contexts": [
         "all"
@@ -12,9 +13,9 @@ chrome.contextMenus.create({
 })
 
 chrome.contextMenus.create({
-    "id": "advanceTranslate",
+    "id": "advancetranslate",
     "title": "Dịch nâng cao",
-    "parentId": "LVE",
+    "parentId": "lveextension",
     "contexts": [
         "all"
     ]
@@ -23,7 +24,7 @@ chrome.contextMenus.create({
 chrome.contextMenus.create({
     "id": "gameCenter",
     "title": "Ôn tập từ vựng",
-    "parentId": "LVE",
+    "parentId": "lveextension",
     "contexts": [
         "all"
     ]
@@ -37,19 +38,22 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
         case "advanceTranslate": { break; }
     }
 })
-if(localStorage.getItem("tokenlve"))
+
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
         console.log(request.action);
         if (request.action == "sendToken") {
             if (request.token) {
                 token = request.token
+                let tmpLocalToken = localStorage.getItem("tokenlve")
+                if(tmpLocalToken) token = tmpLocalToken
                 localStorage.setItem("tokenlve", token)
                 accountID = request.accountID// get account id
                 localStorage.setItem("accountIDlve", accountID)
+                
             }
         }
-        if(request.action == "logout") localStorage.clear()
+        if(request.action == "logout") window.localStorage.clear()
         if(request.action == "getToken") {
             if(localToken){
                 sendResponse({token:localToken, accountID:localAccountID})
