@@ -167,7 +167,7 @@ document.getElementById("i-lve").addEventListener('click', async() => {
                     }
 
                 });
-                let urlRequestExample = "https://twinword-word-graph-dictionary.p.rapidapi.com/example/?entry=" + convertWord;
+                let urlRequestExample = "https://twinword-word-graph-dictionary.p.rapidapi.com/example/?entry=" + convertWord.replace(" ", "%20");
 
                 xhrGetExampleWord.open("GET", urlRequestExample);
                 xhrGetExampleWord.setRequestHeader("x-rapidapi-key", "4163873f00mshac33a4e6303fe2ap107817jsn8c6abd690fd1");
@@ -188,7 +188,7 @@ document.getElementById("i-lve").addEventListener('click', async() => {
                         else ipaWordResolve('');
                     }
                 });
-                let requestIpaWord = "https://twinword-word-graph-dictionary.p.rapidapi.com/definition/?entry=" + convertWord;
+                let requestIpaWord = "https://twinword-word-graph-dictionary.p.rapidapi.com/definition/?entry=" + convertWord.replace(" ", "%20");
                 xhrGetIpaWord.open("GET", requestIpaWord);
                 xhrGetIpaWord.setRequestHeader("x-rapidapi-key", "4163873f00mshac33a4e6303fe2ap107817jsn8c6abd690fd1");
                 xhrGetIpaWord.setRequestHeader("x-rapidapi-host", "twinword-word-graph-dictionary.p.rapidapi.com");
@@ -215,7 +215,7 @@ document.getElementById("i-lve").addEventListener('click', async() => {
         console.log(resultGetExample2)
         let tmpExampleWord
             //optimize example word
-        if (resultGetExample2) {
+        if (resultGetExample2 && resultGetExample2.result_code == 200) {
             let examplesArray = resultGetExample2.example
             tmpExampleWord = examplesArray[0]
 
@@ -409,7 +409,7 @@ function hidePopup(classPopup) {
 }
 //other api
 async function getImageLink() {
-    let result = await fetch(`https://bing-image-search1.p.rapidapi.com/images/search?q=${sel}&offset=2&count=1`, {
+    let result = await fetch(`https://bing-image-search1.p.rapidapi.com/images/search?q=${sel.replace(" ","%20")}&offset=2&count=1`, {
             "method": "GET",
             "headers": {
                 "x-rapidapi-key": "4163873f00mshac33a4e6303fe2ap107817jsn8c6abd690fd1",
@@ -426,7 +426,7 @@ async function getImageLink() {
     return result
 }
 async function getIpaWord() {
-    let result = await fetch("https://wordsapiv1.p.rapidapi.com/words/" + sel + "/pronunciation", {
+    let result = await fetch("https://wordsapiv1.p.rapidapi.com/words/" + sel.replace(" ", "%20") + "/pronunciation", {
             "method": "GET",
             "headers": {
                 "x-rapidapi-key": "4163873f00mshac33a4e6303fe2ap107817jsn8c6abd690fd1",
@@ -469,7 +469,7 @@ async function post(requestUrl, data) {
     return false;
 }
 async function getExample2() {
-    let result = await fetch("https://twinword-word-graph-dictionary.p.rapidapi.com/example/?entry=document", {
+    let result = await fetch("https://twinword-word-graph-dictionary.p.rapidapi.com/example/?entry=" + sel.replace(" ", '%20'), {
             "method": "GET",
             "headers": {
                 "x-rapidapi-key": "4163873f00mshac33a4e6303fe2ap107817jsn8c6abd690fd1",
