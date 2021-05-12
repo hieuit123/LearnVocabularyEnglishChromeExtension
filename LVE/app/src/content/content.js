@@ -151,33 +151,7 @@ document.getElementById("i-lve").addEventListener('click', async() => {
         const data = "q=" + convertWord + "&source=en&target=vi";
         //show loading popup
         showPopup(point_x, point_y, ".parent-loading-popup")
-            //Get translated word
 
-        // let promiseGetTranslateWord = new Promise((resolve, reject) => {
-        //         const data = JSON.stringify([{
-        //             "Text": sel
-        //         }]);
-
-        //         const xhr = new XMLHttpRequest();
-        //         xhr.withCredentials = true;
-
-        //         xhr.addEventListener("readystatechange", function() {
-        //             if (this.readyState === this.DONE) {
-        //                 translateObj = JSON.parse(this.responseText)
-        //                 console.log(translateObj[0].translations[0].text)
-        //                 resolve(translateObj[0].translations[0].text)
-        //             }
-        //         });
-
-        //         xhr.open("POST", "https://microsoft-translator-text.p.rapidapi.com/translate?to=vi&api-version=3.0&from=en&profanityAction=NoAction&textType=plain");
-        //         xhr.setRequestHeader("content-type", "application/json");
-        //         xhr.setRequestHeader("x-rapidapi-key", "4163873f00mshac33a4e6303fe2ap107817jsn8c6abd690fd1");
-        //         xhr.setRequestHeader("x-rapidapi-host", "microsoft-translator-text.p.rapidapi.com");
-
-        //         xhr.send(data);
-        //     })
-        // console.log(translateWordObj)
-        //End get translated word
         //Get example
         let promiseGetExample = new Promise((exampleResolve, exampleReject) => {
                 const dataGetExample = null;
@@ -237,11 +211,37 @@ document.getElementById("i-lve").addEventListener('click', async() => {
         //validate
         let translation = await translate("en", "vi", sel)
         let tmpWord = translation.sentences[0].trans
-        let tmpExampleWord = await promiseGetExample
+        let resultGetExample2 = await getExample2()
+        console.log(resultGetExample2)
+        let tmpExampleWord
+            //optimize example word
+        if (resultGetExample2) {
+            let examplesArray = resultGetExample2.example
+            tmpExampleWord = examplesArray[0]
+
+            let minLength = examplesArray[0].length
+            examplesArray.forEach(element => {
+                if (element.length < minLength) tmpExampleWord = element
+            });
+        } else {
+            tmpExampleWord = await promiseGetExample
+        }
+
+        //change api example
+        // let tmpExampleWord = await promiseGetExample
+
         let myObjIpaWord = await promiseGetIpaWord
-        let tmpIpaWord = myObjIpaWord.ipa
-            // let tmpWord = await promiseGetTranslateWord;
-            //update type of word
+        let resultIpaWord = await getIpaWord()
+        let tmpIpaWord = ""
+        console.log(resultIpaWord)
+        if (resultIpaWord) {
+            if (resultIpaWord.pronunciation.all) tmpIpaWord = resultIpaWord.pronunciation.all
+            if (!resultIpaWord.pronunciation.all) tmpIpaWord = resultIpaWord.pronunciation
+        } else {
+            tmpIpaWord = myObjIpaWord.ipa
+        }
+        // let tmpWord = await promiseGetTranslateWord;
+        //update type of word
         let typeOfWord = ""
         let flagContinueTypeOfWord = false;
         if (myObjIpaWord) {
@@ -337,6 +337,7 @@ document.addEventListener('mouseup', function(event) {
     // if the target of the click isn't the container nor a descendant of the container
     if (!container.is(event.target) && container.has(event.target).length === 0) {
         container.hide();
+        isShowPopup = false
     }
 
     var container = $(".parent-loading-popup");
@@ -354,7 +355,7 @@ document.addEventListener('mouseup', function(event) {
         isShowIcon = false
     }
 
-    if (sel.length && sel != '' && sel != '\n' && !isShowIcon && _sel != sel) {
+    if (sel.length && sel != '' && sel != '\n' && !isShowIcon && _sel != sel && !isShowPopup) {
         point_x = event.pageX;
         point_y = event.pageY;
         //show icon
@@ -373,13 +374,19 @@ function refreshTmpWord(tmpWord, tmpExampleWord, tmpIpaWord) {
 }
 
 async function handleAddWord(wordRequestData) {
-    let data;
-    let dataImage = await getImageLink(sel)
-    wordRequestData.W_Avatar = dataImage.value[0].thumbnailUrl
+    let data
+    let dataImage
+    try {
+        dataImage = await getImageLink(sel)
+        wordRequestData.W_Avatar = dataImage.value[0].thumbnailUrl
+    } catch (e) {
+        console.log(e)
+    }
+
     console.log(dataImage)
     data = await post("word/add", wordRequestData)
     if (data.status) {
-
+        alert("Đã thêm vào sổ từ")
     } else {
         //alert
         alert("Từ này đã có trong sổ từ")
@@ -413,20 +420,39 @@ async function getImageLink() {
             return response.json()
         })
         .catch(err => {
-            return err
+            console.log(err)
+            return null
         });
+    return result
+}
+async function getIpaWord() {
+    let result = await fetch("https://wordsapiv1.p.rapidapi.com/words/" + sel + "/pronunciation", {
+            "method": "GET",
+            "headers": {
+                "x-rapidapi-key": "4163873f00mshac33a4e6303fe2ap107817jsn8c6abd690fd1",
+                "x-rapidapi-host": "wordsapiv1.p.rapidapi.com"
+            }
+        })
+        .then(response => {
+            return response.json()
+        })
+        .catch(err => {
+            console.error(err);
+            return null
+        });
+    if (!result.success) return null
     return result
 }
 var synth = window.speechSynthesis;
 var myVoices = [];
 //end api
 function say(m) {
-    var myMsg = new SpeechSynthesisUtterance(m);
     myVoices = synth.getVoices();
+    var myMsg = new SpeechSynthesisUtterance(m);
     myMsg.voice = myVoices[1];
-    myMsg.pitch = 0.9
-    myMsg.rate = 1
-    window.speechSynthesis.speak(myMsg)
+    myMsg.pitch = 1
+    myMsg.rate = 0.8
+    synth.speak(myMsg)
 }
 async function post(requestUrl, data) {
     let formBody = convertPostData(data)
@@ -441,6 +467,24 @@ async function post(requestUrl, data) {
         return response
     }
     return false;
+}
+async function getExample2() {
+    let result = await fetch("https://twinword-word-graph-dictionary.p.rapidapi.com/example/?entry=document", {
+            "method": "GET",
+            "headers": {
+                "x-rapidapi-key": "4163873f00mshac33a4e6303fe2ap107817jsn8c6abd690fd1",
+                "x-rapidapi-host": "twinword-word-graph-dictionary.p.rapidapi.com"
+            }
+        })
+        .then(response => {
+            return response.json()
+        })
+        .catch(err => {
+            console.error(err);
+            return null
+
+        });
+    return result
 }
 
 function convertPostData(details) {
