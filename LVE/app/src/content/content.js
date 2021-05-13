@@ -215,8 +215,8 @@ document.getElementById("i-lve").addEventListener('click', async() => {
         console.log(resultGetExample2)
         let tmpExampleWord
             //optimize example word
-        if (resultGetExample2 && resultGetExample2.result_code == 200) {
-            let examplesArray = resultGetExample2.example
+        if (resultGetExample2.status == 200) {
+            let examplesArray = resultGetExample2.examples
             tmpExampleWord = examplesArray[0]
 
             let minLength = examplesArray[0].length
@@ -469,20 +469,20 @@ async function post(requestUrl, data) {
     return false;
 }
 async function getExample2() {
-    let result = await fetch("https://twinword-word-graph-dictionary.p.rapidapi.com/example/?entry=" + sel.replace(" ", '%20'), {
+    let result = await fetch("https://wordsapiv1.p.rapidapi.com/words/" + sel.replace(" ", "%20") + "/examples", {
             "method": "GET",
             "headers": {
                 "x-rapidapi-key": "4163873f00mshac33a4e6303fe2ap107817jsn8c6abd690fd1",
-                "x-rapidapi-host": "twinword-word-graph-dictionary.p.rapidapi.com"
+                "x-rapidapi-host": "wordsapiv1.p.rapidapi.com"
             }
         })
         .then(response => {
+            console.log(response);
             return response.json()
         })
         .catch(err => {
             console.error(err);
-            return null
-
+            return ""
         });
     return result
 }
