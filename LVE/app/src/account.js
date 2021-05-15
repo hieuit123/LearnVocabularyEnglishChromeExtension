@@ -76,8 +76,8 @@ async function handleInitData(){
     //init analytic word
     let analyticWord = await fetchDataOther(`word/getAnalyticWordByIdAccount/${myAccountID}`)
     console.log(analyticWord);
-    t_totalWord.innerHTML = analyticWord.totalWord
-    t_totalWordToday.innerHTML = analyticWord.totalWordToday
+    t_totalWord.innerHTML = analyticWord.totalWord+"<span class='tu'> từ</span>"
+    t_totalWordToday.innerHTML = analyticWord.totalWordToday+"<span class='tu'> từ</span>"
 }
 async function fetchDataOther(requestUrl) {
     let response = await fetch(`${URL_SERVER}${requestUrl}`);

@@ -18,12 +18,12 @@
     width: 22px;
 }
 
-.i-speaker {
+.i-speaker-lve {
     cursor: pointer;
     float: left;
 }
 
-.i-speaker:hover {
+.i-speaker-lve:hover {
     -ms-transform: scale(1.1);
     /* IE 9 */
     -webkit-transform: scale(1.1);
@@ -40,7 +40,7 @@
     position: absolute;
     z-index: 100;
     border-radius: 10px;
-    z-index: 999;
+    z-index: 9999999;
 }
 
 .parent-loading-popup {
@@ -48,13 +48,12 @@
     position: absolute;
     z-index: 100;
     border-radius: 10px;
-    z-index: 999;
+    z-index: 9999999;
 }
 
 .popup {
     width: 300px;
     height: auto;
-    z-index: 99999999999;
     line-height: 1.4;
     box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%);
 }

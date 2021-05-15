@@ -67,7 +67,7 @@ var popup = '<div class="popup">' +
     '<div class="word">' +
     '<!-- original word -->' +
     '<span class="o-word">LVEOgWord</span>' +
-    '<img class="i-speaker" id="btn-speak" src="' + urlSrcIconSpeaker + '">' +
+    '<img class="i-speaker-lve" id="btn-speak-lve" src="' + urlSrcIconSpeaker + '">' +
     '<button id="btn-add-word"">Thêm vào sổ từ</button>' +
     '<div class="clearfix"></div>' +
     '<div class="phien-am">[LVEIpaWord]</div>' +
@@ -275,7 +275,7 @@ document.getElementById("i-lve").addEventListener('click', async() => {
         hidePopup(".parent-loading-popup")
         dPopup.innerHTML = popup;
         //event btn speak
-        $("#btn-speak").click(() => {
+        $("#btn-speak-lve").click(() => {
                 say(sel)
             })
             //event btn add word
