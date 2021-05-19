@@ -365,9 +365,16 @@ document.addEventListener('mouseup', function(event) {
         //validate
         isShowIcon = true
         _sel = sel;
+        setTimeout(() => refreshSel(), 5000);
+        setTimeout(() => hideIconLve(), 40000);
     }
 })
 
+function hideIconLve() { $(".icon-lve").hide(); }
+
+function refreshSel() {
+    if (sel == _sel) _sel = ""
+}
 //end event
 function refreshTmpWord(tmpWord, tmpExampleWord, tmpIpaWord) {
     popup = _popup;
