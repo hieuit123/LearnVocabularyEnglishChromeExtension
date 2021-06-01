@@ -78,10 +78,6 @@
     padding-right: 6px;
 }
 
-.word {
-    /* width: 155px; */
-}
-
 .o-word {
     text-transform: uppercase;
     padding: 7px 2px 2px 5px;
@@ -100,8 +96,6 @@
 .clearfix {
     clear: both;
 }
-
-.add-word {}
 
 #btn-add-word {
     margin: 5px 5px 2px 2px;
@@ -185,7 +179,7 @@ body {
     background-color: white;
 }
 
-.title {
+.title-lve {
     margin: auto;
     width: 65%;
     color: #1e4bff;
