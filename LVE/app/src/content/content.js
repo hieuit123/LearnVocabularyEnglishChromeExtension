@@ -220,7 +220,6 @@ document.getElementById("i-lve").addEventListener('click', async () => {
     let translation = await translate("en", "vi", sel)
     let tmpWord = translation.sentences[0].trans
     let resultGetExample2 = await getExample2()
-    console.log(resultGetExample2)
     let tmpExampleWord
     //optimize example word
     if (resultGetExample2.status == 200) {
