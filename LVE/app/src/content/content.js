@@ -287,11 +287,17 @@ document.getElementById("i-lve").addEventListener('click', async () => {
     })
     //event btn add word
     $("#btn-add-word").click(async () => {
-        if (sel.length > 30) alert("Từ quá dài")
+        if (sel.length > 30) {
+            alert("Từ quá dài");
+            return;
+        
+        }
+
         if (!accountID) {
             alert("Bạn chưa đăng nhập!")
             return
         }
+        alert("Đã thêm vào sổ từ");
         let linkPost = window.location.href
         let optionWB = document.getElementById("select-wb").value;
         let originalWord = sel
@@ -401,7 +407,6 @@ function refreshTmpWord(tmpWord, tmpExampleWord, tmpIpaWord) {
 }
 
 async function handleAddWord(wordRequestData) {
-    alert("Đã thêm vào sổ từ");
     let data
     let dataImage
     try {
